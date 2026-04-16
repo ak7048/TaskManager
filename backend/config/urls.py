@@ -6,6 +6,7 @@ Swagger UI is available at /swagger/ and ReDoc at /redoc/.
 
 from django.contrib import admin
 from django.urls import path, include
+from django.http import JsonResponse
 from drf_yasg import openapi
 from drf_yasg.views import get_schema_view
 from rest_framework import permissions
@@ -47,6 +48,8 @@ schema_view = get_schema_view(
 # URL PATTERNS
 # ==============================================================================
 urlpatterns = [
+    path("", lambda request: JsonResponse({"status": "ok", "service": "taskmanager-backend"})),
+
     # Django Admin
     path("admin/", admin.site.urls),
 
