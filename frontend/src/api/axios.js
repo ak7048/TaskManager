@@ -7,13 +7,18 @@ import axios from 'axios';
 const rawBase = import.meta.env.VITE_API_BASE_URL;
 const envFull = import.meta.env.VITE_API_URL;
 const PROD_BACKEND_URL = 'https://taskmanager-backend-g0dy.onrender.com';
+const isLocalHost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
 
 const normalizeBaseUrl = (value) => value?.replace(/\/+$/, '');
+const isLocalApiUrl = (value) => /localhost|127\.0\.0\.1/.test(value || '');
+
+const preferredEnvUrl = normalizeBaseUrl(rawBase || envFull);
+const safeEnvUrl = preferredEnvUrl && (!isLocalApiUrl(preferredEnvUrl) || isLocalHost)
+  ? preferredEnvUrl
+  : null;
 
 const resolvedBaseUrl = normalizeBaseUrl(
-  envFull
-  || rawBase
-  || (window.location.hostname === 'localhost' ? 'http://localhost:8000' : PROD_BACKEND_URL)
+  safeEnvUrl || (isLocalHost ? 'http://localhost:8000' : PROD_BACKEND_URL)
 );
 
 const API_URL = resolvedBaseUrl.endsWith('/api/v1')
